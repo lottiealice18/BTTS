@@ -10,7 +10,6 @@ PERCENTAGE_COLUMNS = ['Home Win %', 'Draw %', 'Away Win %', 'BTTS %', 'BTTS Home
                       'Over 3.5 Goals %', 'Over 4.5 Goals %']
 AVERAGE_COLUMNS = ['Average Goals For Home', 'Average Goals For Away']
 
-
 def staking_plan(bank_balance, decimal_odds, winning_probability):
     """
     This function uses the Kelly formula to calculate the optimal stake size based on the bank balance, odds,
@@ -36,14 +35,12 @@ def staking_plan(bank_balance, decimal_odds, winning_probability):
 
     return stake, kelly_fraction
 
-
 def download_link(object_to_download, download_filename, download_link_text):
     if isinstance(object_to_download, pd.DataFrame):
         object_to_download = object_to_download.to_csv(index=False)
     b64 = base64.b64encode(object_to_download.encode()).decode()
     href = f'data:file/csv;base64,{b64}'
     return f'<a href="{href}" download="{download_filename}">{download_link_text}</a>'
-
 
 def prepare_data(data, percentage_columns, average_columns):
     for column in percentage_columns:
@@ -57,22 +54,21 @@ def prepare_data(data, percentage_columns, average_columns):
             data.loc[:, column] = data[column].apply(lambda x: '{:.2f}'.format(x))
     return data
 
-
 # File paths and data loading
 data_files = {
-    "Belgium": "Football_Data/Belgium.xlsx",
-    "England": "Football_Data/England.xlsx",
-    "France": "Football_Data/France.xlsx",
-    "Germany": "Football_Data/Germany.xlsx",
-    "Holland": "Football_Data/Holland.xlsx",
-    "Italy": "Football_Data/Italy.xlsx",
-    "Portugal": "Football_Data/Portugal.xlsx",
-    "Scotland": "Football_Data/Scotland.xlsx",
-    "Spain": "Football_Data/Spain.xlsx",
-    "Turkey": "Football_Data/Turkey.xlsx",
+    "Belgium": "https://raw.githubusercontent.com/lottiealice18/BTTS/main/Belgium.csv",
+    "England": "https://raw.githubusercontent.com/lottiealice18/BTTS/main/England.csv",
+    "France": "https://raw.githubusercontent.com/lottiealice18/BTTS/main/France.csv",
+    "Germany": "https://raw.githubusercontent.com/lottiealice18/BTTS/main/Germany.csv",
+    "Holland": "https://raw.githubusercontent.com/lottiealice18/BTTS/main/Holland.csv",
+    "Italy": "https://raw.githubusercontent.com/lottiealice18/BTTS/main/Italy.csv",
+    "Portugal": "https://raw.githubusercontent.com/lottiealice18/BTTS/main/Portugal.csv",
+    "Scotland": "https://raw.githubusercontent.com/lottiealice18/BTTS/main/Scotland.csv",
+    "Spain": "https://raw.githubusercontent.com/lottiealice18/BTTS/main/Spain.csv",
+    "Turkey": "https://raw.githubusercontent.com/lottiealice18/BTTS/main/Turkey.csv",
 }
 
-data = {k: pd.read_excel(v) for k, v in data_files.items()}
+data = {k: pd.read_csv(v) for k, v in data_files.items()}
 
 # Configuration for the data processing
 config = {
@@ -145,7 +141,6 @@ PAGES = {
     "Betting Systems and Promotions Page": "betting_and_promotions"
 }
 
-
 def home_page():
     st.title("Both Teams to Score and Goals Scored Percentages")
     st.write("Welcome to Both Teams to Score and Goals Scored Percentages!")
@@ -161,7 +156,6 @@ def home_page():
         "Feel free to explore the sidebar to select a country and league of interest. Once selected, you can view and download the corresponding data. We hope that these statistics enhance your understanding of both teams to score and goals scored percentages, empowering you to make informed decisions.")
     st.write(
         "Please note that the statistics provided are based on historical data and should be used for informational purposes only.")
-
 
 def stats_and_leagues_page():
     # Sidebar for selections
@@ -206,7 +200,6 @@ def stats_and_leagues_page():
     st.write('')
     st.write('')
 
-
 def todays_matches_page():
     st.title("Today's Matches")
     st.write("Here is a list of today's matches.")
@@ -216,7 +209,7 @@ def todays_matches_page():
         "Make sure to check out the 'Betting Systems and Promotions Page' for the latest offers and promotions to enhance your betting experience.")
 
     # Load today's matches data
-    todays_matches = pd.read_excel("Football_Data/Todays Matches.xlsx")
+    todays_matches = pd.read_csv("https://raw.githubusercontent.com/lottiealice18/BTTS/main/Todays%20Matches.csv")
 
     # Initialize an empty list to store today's matches with stats
     todays_data_with_stats = []
@@ -251,7 +244,6 @@ def todays_matches_page():
     st.write('')
     st.write('')
 
-
 def betting_and_promotions():
     st.title("Betting Systems and Promotions")
 
@@ -260,7 +252,7 @@ def betting_and_promotions():
                                         ['None', 'Value Bet Calculator', '18 Team Combination System', 'System 3',
                                          'System 4',
                                          'System 5'])
-    # Rest of your code...
+        # Rest of your code...
 
     if system_selection == 'None':
         st.write("Welcome to the Betting Systems and Offers page!")
@@ -294,40 +286,25 @@ def betting_and_promotions():
             st.write("Based on your estimated probability, this does not appear to be a Value Bet.")
 
     elif system_selection == '18 Team Combination System':
-
         st.title("18 Team Combination System")
-
         st.write("The 18 Team Combination System involves selecting 18 teams and creating combinations of them "
                  "such that at least one line will contain 4 wins if 7 of the 18 selected teams win. "
                  "This is achieved using a 'wheel' system, a strategic play method designed to optimize the number "
                  "of winning combinations.")
 
         combinations = [
-
             "01 02 03 04 05 06",
-
             "07 08 09 10 11 12",
-
             "13 14 15 16 17 18",
-
             "01 07 13 08 14 03",
-
             "02 09 15 10 04 05",
-
             "11 17 06 12 16 18",
-
             "01 09 14 10 15 05",
-
             "02 07 11 03 13 16",
-
             "08 12 04 18 06 17",
-
             "01 08 11 15 03 16",
-
             "02 13 09 04 17 05",
-
             "07 14 10 18 12 06",
-
         ]
 
         st.write("For example, the system creates combinations like this:")
@@ -348,7 +325,6 @@ def betting_and_promotions():
     elif system_selection == 'System 5':
         st.write("Hello, you've selected System 5!")
 
-
 def main():
     st.sidebar.title('Navigation')
     selection = st.sidebar.radio("Select a Page", list(PAGES.keys()))
@@ -360,7 +336,6 @@ def main():
         todays_matches_page()
     elif selection == "Betting Systems and Promotions Page":
         betting_and_promotions()
-
 
 if __name__ == "__main__":
     main()
