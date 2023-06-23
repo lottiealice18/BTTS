@@ -232,9 +232,6 @@ def todays_matches_page():
     # Combine all dataframes
     todays_data_with_stats = pd.concat(todays_data_with_stats)
 
-    # Display the data
-    st.dataframe(todays_data_with_stats)
-
     # Get column names from the filtered DataFrame
     columns = todays_data_with_stats.columns.tolist()
 
@@ -249,14 +246,14 @@ def todays_matches_page():
     selected_column = st.radio("Select Columns", columns)
 
     if selected_column == "None":
-        # Display the original DataFrame
-        st.dataframe(todays_data_with_stats)
+        # Remove the original DataFrame from the main page
+        st.empty()
     else:
         # Filtered DataFrame based on the selected column
         filtered_data = todays_data_with_stats[['Home Team', 'Away Team', selected_column]]
 
         # Remove the original DataFrame from the main page
-        st.text('')
+        st.empty()
 
         # Display the filtered data
         st.dataframe(filtered_data)
@@ -269,6 +266,7 @@ def todays_matches_page():
     # Trigger download
     st.write('')
     st.write('')
+
 
 
 
