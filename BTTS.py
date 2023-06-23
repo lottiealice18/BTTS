@@ -238,6 +238,10 @@ def todays_matches_page():
     # Get column names from the filtered DataFrame
     columns = todays_data_with_stats.columns.tolist()
 
+    # Remove unwanted columns
+    unwanted_columns = ['Home Team', 'Away Team', 'League']
+    columns = [column for column in columns if column not in unwanted_columns]
+
     # Add "None" option to the column selection
     columns.insert(0, "None")
 
