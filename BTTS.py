@@ -211,38 +211,28 @@ def todays_matches_page():
     # Load today's matches data
     todays_matches = pd.read_csv("https://raw.githubusercontent.com/lottiealice18/BTTS/main/Todays%20Matches.csv")
 
-    # Initialize an empty list to store today's matches with stats
-    todays_data_with_stats = []
+    # Get column options
+    column_options = todays_matches.columns.tolist()
 
-    # Loop over each country's data
-    for country in config.keys():
-        # Load country's data
-        country_data = config[country]["data"]
+    # Select column(s) using buttons
+    selected_columns = st.multiselect("Select Column(s)", column_options)
 
-        # Prepare the country's data
-        country_data = prepare_data(country_data, config[country]["percentage_columns"],
-                                    config[country]["average_columns"])
-
-        # Merge today's matches with this country's data on 'Home Team' and 'Away Team'
-        merged_data = pd.merge(todays_matches, country_data, on=['Home Team', 'Away Team'], how='inner')
-
-        # Append this to the overall list
-        todays_data_with_stats.append(merged_data)
-
-    # Combine all dataframes
-    todays_data_with_stats = pd.concat(todays_data_with_stats)
+    # Filter the data based on selected columns
+    if selected_columns:
+        todays_matches = todays_matches[selected_columns]
 
     # Display the data
-    st.dataframe(todays_data_with_stats)
+    st.dataframe(todays_matches)
 
     # Download link for the data
     download_link_text = "Click here to download today's matches as a CSV"
-    tmp_download_link = download_link(todays_data_with_stats, 'todays_matches.csv', download_link_text)
+    tmp_download_link = download_link(todays_matches, 'todays_matches.csv', download_link_text)
     st.markdown(tmp_download_link, unsafe_allow_html=True)
 
     # Trigger download
     st.write('')
     st.write('')
+
 
 def betting_and_promotions():
     st.title("Betting Systems and Promotions")
