@@ -238,14 +238,21 @@ def todays_matches_page():
     # Get column names from the filtered DataFrame
     columns = todays_data_with_stats.columns.tolist()
 
+    # Add "None" option to the column selection
+    columns.insert(0, "None")
+
     # Select columns using radio buttons
-    selected_columns = st.radio("Select Columns", columns)
+    selected_column = st.radio("Select Columns", columns)
 
-    # Filtered DataFrame based on the selected column
-    filtered_data = todays_data_with_stats[[selected_columns]]
+    if selected_column == "None":
+        # Display the original DataFrame
+        st.dataframe(todays_data_with_stats)
+    else:
+        # Filtered DataFrame based on the selected column
+        filtered_data = todays_data_with_stats[['Home Team', 'Away Team', selected_column]]
 
-    # Display the filtered data
-    st.dataframe(filtered_data)
+        # Display the filtered data
+        st.dataframe(filtered_data)
 
     # Download link for the data
     download_link_text = "Click here to download today's matches as a CSV"
@@ -255,6 +262,7 @@ def todays_matches_page():
     # Trigger download
     st.write('')
     st.write('')
+
 
 
 
