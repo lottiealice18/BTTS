@@ -204,51 +204,23 @@ def todays_matches_page():
     st.title("Today's Matches")
     st.write("Here is a list of today's matches.")
     st.write(
-        "Please download the data as a CSV file (Link at the bottom of the page) to explore it further. In Excel, you can use filters to sort and analyze the data. For example, you can sort columns from largest to smallest to identify interesting patterns or trends.")
-    st.write(
-        "Make sure to check out the 'Betting Systems and Promotions Page' for the latest offers and promotions to enhance your betting experience.")
+        "Please use the checkboxes below to select the columns you want to display. You can select multiple columns.")
 
     # Load today's matches data
     todays_matches = pd.read_csv("https://raw.githubusercontent.com/lottiealice18/BTTS/main/Todays%20Matches.csv")
 
-    # Get unique country names from the data
-    countries = todays_matches['Country'].unique().tolist()
+    # Get unique column names
+    column_names = todays_matches.columns.tolist()
 
-    # Select country using dropdown
-    selected_country = st.selectbox("Select Country", countries)
-
-    # Get the corresponding data for the selected country
-    country_data = config[selected_country]["data"]
-
-    # Prepare the country's data
-    country_data = prepare_data(country_data, config[selected_country]["percentage_columns"],
-                                config[selected_country]["average_columns"])
-
-    # Merge today's matches with the country's data on 'Home Team' and 'Away Team'
-    merged_data = pd.merge(todays_matches, country_data, on=['Home Team', 'Away Team'], how='inner')
-
-    # Display the data
-    st.dataframe(merged_data)
-
-    # Get column options
-    column_options = merged_data.columns.tolist()
-
-    # Select column(s) using multiselect
-    selected_columns = st.multiselect("Select Column(s)", column_options)
+    # Select columns using checkboxes
+    selected_columns = st.multiselect("Select Columns", column_names, default=column_names)
 
     # Filter the data based on selected columns
-    if selected_columns:
-        filtered_data = merged_data[selected_columns]
-        st.dataframe(filtered_data)
+    filtered_data = todays_matches[selected_columns]
 
-    # Download link for the data
-    download_link_text = "Click here to download today's matches as a CSV"
-    tmp_download_link = download_link(merged_data, 'todays_matches.csv', download_link_text)
-    st.markdown(tmp_download_link, unsafe_allow_html=True)
-
-    # Trigger download
-    st.write('')
-    st.write('')
+    # Display the filtered data
+    st.dataframe(filtered_data)
+}
 
 
 
