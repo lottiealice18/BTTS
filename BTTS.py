@@ -235,6 +235,18 @@ def todays_matches_page():
     # Display the data
     st.dataframe(todays_data_with_stats)
 
+    # Get column names from the filtered DataFrame
+    columns = todays_data_with_stats.columns.tolist()
+
+    # Select columns using radio buttons
+    selected_columns = st.radio("Select Columns", columns)
+
+    # Filtered DataFrame based on the selected column
+    filtered_data = todays_data_with_stats[[selected_columns]]
+
+    # Display the filtered data
+    st.dataframe(filtered_data)
+
     # Download link for the data
     download_link_text = "Click here to download today's matches as a CSV"
     tmp_download_link = download_link(todays_data_with_stats, 'todays_matches.csv', download_link_text)
@@ -243,6 +255,7 @@ def todays_matches_page():
     # Trigger download
     st.write('')
     st.write('')
+
 
 
 def betting_and_promotions():
