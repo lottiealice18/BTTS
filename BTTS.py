@@ -218,7 +218,7 @@ def stats_and_leagues_page():
 
 def todays_matches_page():
     st.title("Today's Matches")
-    st.write("Here is a list of today's matches.")
+    st.write("This is an example of what the today's matches page will look like once the seasons begin. It will then be uploaded daily.")
     st.write(
         "Please download the data as a CSV file (Link at the bottom of the page) to explore it further. In Excel, you can use filters to sort and analyze the data. For example, you can sort columns from largest to smallest to identify interesting patterns or trends.")
     st.write(
