@@ -203,43 +203,46 @@ def stats_and_leagues_page():
 def todays_matches_page():
     st.title("Today's Matches")
     st.write("Here is a list of today's matches.")
-    st.write("Please use the checkboxes below to select the columns you want to display. You can select multiple columns.")
+    st.write(
+        "Please download the data as a CSV file (Link at the bottom of the page) to explore it further. In Excel, you can use filters to sort and analyze the data. For example, you can sort columns from largest to smallest to identify interesting patterns or trends.")
+    st.write(
+        "Make sure to check out the 'Betting Systems and Promotions Page' for the latest offers and promotions to enhance your betting experience.")
 
     # Load today's matches data
     todays_matches = pd.read_csv("https://raw.githubusercontent.com/lottiealice18/BTTS/main/Todays%20Matches.csv")
 
-    # Get unique column names
-    column_names = todays_matches.columns.tolist()
+    # Initialize an empty list to store today's matches with stats
+    todays_data_with_stats = []
 
-    # Select columns using checkboxes
-    selected_columns = st.multiselect("Select Columns", column_names, default=column_names)
+    # Loop over each country's data
+    for country in config.keys():
+        # Load country's data
+        country_data = config[country]["data"]
 
-    # Filter the data based on selected columns
-    filtered_data = todays_matches.loc[:, selected_columns]
+        # Prepare the country's data
+        country_data = prepare_data(country_data, config[country]["percentage_columns"],
+                                    config[country]["average_columns"])
 
-    # Display the filtered data
-    st.dataframe(filtered_data)
-def todays_matches_page():
-    st.title("Today's Matches")
-    st.write("Here is a list of today's matches.")
-    st.write("Please use the checkboxes below to select the columns you want to display. You can select multiple columns.")
+        # Merge today's matches with this country's data on 'Home Team' and 'Away Team'
+        merged_data = pd.merge(todays_matches, country_data, on=['Home Team', 'Away Team'], how='inner')
 
-    # Load today's matches data
-    todays_matches = pd.read_csv("https://raw.githubusercontent.com/lottiealice18/BTTS/main/Todays%20Matches.csv")
+        # Append this to the overall list
+        todays_data_with_stats.append(merged_data)
 
-    # Get unique column names
-    column_names = todays_matches.columns.tolist()
+    # Combine all dataframes
+    todays_data_with_stats = pd.concat(todays_data_with_stats)
 
-    # Select columns using checkboxes
-    selected_columns = st.multiselect("Select Columns", column_names, default=column_names)
+    # Display the data
+    st.dataframe(todays_data_with_stats)
 
-    # Filter the data based on selected columns
-    filtered_data = todays_matches.loc[:, selected_columns]
+    # Download link for the data
+    download_link_text = "Click here to download today's matches as a CSV"
+    tmp_download_link = download_link(todays_data_with_stats, 'todays_matches.csv', download_link_text)
+    st.markdown(tmp_download_link, unsafe_allow_html=True)
 
-    # Display the filtered data
-    st.dataframe(filtered_data)
-}
-
+    # Trigger download
+    st.write('')
+    st.write('')
 
 def betting_and_promotions():
     st.title("Betting Systems and Promotions")
