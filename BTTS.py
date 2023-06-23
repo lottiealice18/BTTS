@@ -1,4 +1,5 @@
 
+
 import streamlit as st
 import pandas as pd
 import base64
@@ -215,7 +216,6 @@ def stats_and_leagues_page():
     st.write('')
 
 
-
 def todays_matches_page():
     st.title("Today's Matches")
     st.write("Here is a list of today's matches.")
@@ -223,6 +223,11 @@ def todays_matches_page():
         "Please download the data as a CSV file (Link at the bottom of the page) to explore it further. In Excel, you can use filters to sort and analyze the data. For example, you can sort columns from largest to smallest to identify interesting patterns or trends.")
     st.write(
         "Make sure to check out the 'Betting Systems and Promotions Page' for the latest offers and promotions to enhance your betting experience.")
+    st.write('')
+    st.write(
+        '**Note:** Please scroll horizontally to view all the stats for today\'s matches, or select a stat from the radio buttons.')
+    st.write(
+        'These statistics are based on past data and do not guarantee future success. Please gamble responsibly.')
 
     # Load today's matches data
     todays_matches = pd.read_csv("https://raw.githubusercontent.com/lottiealice18/BTTS/main/Todays%20Matches.csv")
