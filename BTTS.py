@@ -187,21 +187,21 @@ def stats_and_leagues_page():
     limited_data = data[data['League'] == league_selection].head(10)
     full_data = data[data['League'] == league_selection]
 
-    # Remove index column numbers
-    limited_data_display = limited_data.reset_index(drop=True)
-    full_data_display = full_data.reset_index(drop=True)
+    # Set 'Home Team' and 'Away Team' as the index
+    limited_data_display = limited_data.set_index(['Home Team', 'Away Team'])
+    full_data_display = full_data.set_index(['Home Team', 'Away Team'])
 
     # Create a placeholder for the dataframe
     df_placeholder = st.empty()
 
     # Select team from a dropdown menu
-    teams = sorted(set(full_data_display['Home Team']).union(full_data_display['Away Team']))
+    teams = sorted(set(full_data_display.index.get_level_values(0)).union(full_data_display.index.get_level_values(1)))
     teams.insert(0, "None")
     selected_team = st.selectbox('Select Team', teams, index=0)
 
     # Filter DataFrame based on the selected team
     if selected_team != "None":
-        filtered_data = full_data_display[(full_data_display['Home Team'] == selected_team) | (full_data_display['Away Team'] == selected_team)]
+        filtered_data = full_data_display[(full_data_display.index.get_level_values(0) == selected_team) | (full_data_display.index.get_level_values(1) == selected_team)]
         df_placeholder.dataframe(filtered_data)
     else:
         df_placeholder.dataframe(limited_data_display)
@@ -213,6 +213,7 @@ def stats_and_leagues_page():
     # Trigger download
     st.write('')
     st.write('')
+
 
 
 def todays_matches_page():
@@ -247,6 +248,9 @@ def todays_matches_page():
     # Combine all dataframes
     todays_data_with_stats = pd.concat(todays_data_with_stats)
 
+    # Set 'Home Team' and 'Away Team' as the index
+    todays_data_with_stats.set_index(['Home Team', 'Away Team'], inplace=True)
+
     # Get column names from the filtered DataFrame
     columns = todays_data_with_stats.columns.tolist()
 
@@ -265,7 +269,7 @@ def todays_matches_page():
 
     if selected_column != "None":
         # Filtered DataFrame based on the selected column
-        filtered_data = todays_data_with_stats[['Home Team', 'Away Team', 'League', selected_column]]
+        filtered_data = todays_data_with_stats[['League', selected_column]]
         # Display the filtered data
         df_placeholder.dataframe(filtered_data)
     else:
@@ -280,16 +284,6 @@ def todays_matches_page():
     # Trigger download
     st.write('')
     st.write('')
-
-
-
-
-
-
-
-
-
-
 
 
 def betting_and_promotions():
