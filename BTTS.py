@@ -248,15 +248,18 @@ def todays_matches_page():
     if selected_column != "None":
         # Filtered DataFrame based on the selected column
         filtered_data = todays_data_with_stats[['Home Team', 'Away Team', 'League', selected_column]]
-
-        # Remove the original DataFrame from the main page
-        st.empty()
-
+        
         # Display the filtered data
         st.dataframe(filtered_data)
+        
+        # Remove the original DataFrame from the main page
+        st.empty()
     else:
         # Display the original DataFrame
         st.dataframe(todays_data_with_stats)
+        
+        # Remove the filtered DataFrame from the main page
+        st.empty()
 
     # Download link for the data
     download_link_text = "Click here to download today's matches as a CSV"
