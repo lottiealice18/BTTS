@@ -1,3 +1,4 @@
+
 import streamlit as st
 import pandas as pd
 import base64
@@ -190,15 +191,29 @@ def stats_and_leagues_page():
     limited_data_display = limited_data.reset_index(drop=True)
     full_data_display = full_data.reset_index(drop=True)
 
+    # Create a placeholder for the dataframe
+    df_placeholder = st.empty()
+
+    # Select team from a dropdown menu
+    teams = sorted(set(full_data_display['Home Team']).union(full_data_display['Away Team']))
+    teams.insert(0, "None")
+    selected_team = st.selectbox('Select Team', teams, index=0)
+
+    # Filter DataFrame based on the selected team
+    if selected_team != "None":
+        filtered_data = full_data_display[(full_data_display['Home Team'] == selected_team) | (full_data_display['Away Team'] == selected_team)]
+        df_placeholder.dataframe(filtered_data)
+    else:
+        df_placeholder.dataframe(limited_data_display)
+
     # Button to display all rows
     if st.button("View All"):
-        st.table(full_data_display)
-    else:
-        st.table(limited_data_display)
+        df_placeholder.dataframe(full_data_display)
 
     # Trigger download
     st.write('')
     st.write('')
+
 
 def todays_matches_page():
     st.title("Today's Matches")
