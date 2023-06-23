@@ -255,6 +255,9 @@ def todays_matches_page():
         # Filtered DataFrame based on the selected column
         filtered_data = todays_data_with_stats[['Home Team', 'Away Team', selected_column]]
 
+        # Remove the original DataFrame from the main page
+        st.text('')
+
         # Display the filtered data
         st.dataframe(filtered_data)
 
@@ -266,6 +269,7 @@ def todays_matches_page():
     # Trigger download
     st.write('')
     st.write('')
+
 
 
 
