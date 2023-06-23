@@ -219,6 +219,25 @@ def todays_matches_page():
 
     # Display the filtered data
     st.dataframe(filtered_data)
+def todays_matches_page():
+    st.title("Today's Matches")
+    st.write("Here is a list of today's matches.")
+    st.write("Please use the checkboxes below to select the columns you want to display. You can select multiple columns.")
+
+    # Load today's matches data
+    todays_matches = pd.read_csv("https://raw.githubusercontent.com/lottiealice18/BTTS/main/Todays%20Matches.csv")
+
+    # Get unique column names
+    column_names = todays_matches.columns.tolist()
+
+    # Select columns using checkboxes
+    selected_columns = st.multiselect("Select Columns", column_names, default=column_names)
+
+    # Filter the data based on selected columns
+    filtered_data = todays_matches.loc[:, selected_columns]
+
+    # Display the filtered data
+    st.dataframe(filtered_data)
 }
 
 
