@@ -159,6 +159,7 @@ def home_page():
     st.write(
         "Please note that the statistics provided are based on historical data and should be used for informational purposes only.")
 
+
 def stats_and_leagues_page():
     # Sidebar for selections
     st.sidebar.title("Selections")
@@ -181,7 +182,8 @@ def stats_and_leagues_page():
 
     # Download link for the limited data
     download_link_text = f'Please download {country_selection} {league_selection} info as a CSV'
-    tmp_download_link = download_link(data[data['League'] == league_selection], 'YOUR_DOWNLOADED_DATA.csv', download_link_text)
+    tmp_download_link = download_link(data[data['League'] == league_selection], 'YOUR_DOWNLOADED_DATA.csv',
+                                      download_link_text)
     st.markdown(tmp_download_link, unsafe_allow_html=True)
 
     # Display a limited number of rows by default
@@ -202,7 +204,14 @@ def stats_and_leagues_page():
 
     # Filter DataFrame based on the selected team
     if selected_team != "None":
-        filtered_data = full_data_display[(full_data_display.index.get_level_values(0) == selected_team) | (full_data_display.index.get_level_values(1) == selected_team)]
+        home_games = full_data_display[full_data_display.index.get_level_values(0) == selected_team]
+        away_games = full_data_display[full_data_display.index.get_level_values(1) == selected_team]
+
+        # Sort opponents in alphabetical order
+        home_games.sort_index(level='Away Team', inplace=True)
+        away_games.sort_index(level='Home Team', inplace=True)
+
+        filtered_data = pd.concat([home_games, away_games])
         df_placeholder.dataframe(filtered_data)
     else:
         df_placeholder.dataframe(limited_data_display)
@@ -218,7 +227,7 @@ def stats_and_leagues_page():
 
 def todays_matches_page():
     st.title("Today's Matches")
-    st.write("This is an example of what the today's matches page will look like once the seasons begin. It will then be uploaded daily.")
+    st.write("Here is a list of today's matches.")
     st.write(
         "Please download the data as a CSV file (Link at the bottom of the page) to explore it further. In Excel, you can use filters to sort and analyze the data. For example, you can sort columns from largest to smallest to identify interesting patterns or trends.")
     st.write(
