@@ -251,6 +251,9 @@ def todays_matches_page():
     # Set 'Home Team' and 'Away Team' as the index
     todays_data_with_stats.set_index(['Home Team', 'Away Team'], inplace=True)
 
+    # Sort by 'League', 'Home Team' and 'Away Team'
+    todays_data_with_stats.sort_values(by=['League', 'Home Team', 'Away Team'], inplace=True)
+
     # Get column names from the filtered DataFrame
     columns = todays_data_with_stats.columns.tolist()
 
@@ -284,6 +287,7 @@ def todays_matches_page():
     # Trigger download
     st.write('')
     st.write('')
+
 
 
 def betting_and_promotions():
@@ -368,6 +372,9 @@ def betting_and_promotions():
         st.write("Hello, you've selected System 5!")
 
 def main():
+    st.markdown("""
+        **Note for Mobile Users:** Please click on the arrow at the top left corner to open the selections sidebar.
+        """)
     st.sidebar.title('Navigation')
     selection = st.sidebar.radio("Select a Page", list(PAGES.keys()))
     if selection == "Home":
