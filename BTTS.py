@@ -195,16 +195,13 @@ def stats_and_leagues_page():
         away_games.sort_index(level='Home Team', inplace=True)
 
         filtered_data = pd.concat([home_games, away_games])
-        filtered_data = filtered_data.reset_index()  # Reset the index to include 'Home Team' and 'Away Team' columns
-        df_placeholder.dataframe(filtered_data.drop(columns=['League']))  # Exclude 'League' column from display
+        df_placeholder.dataframe(filtered_data.reset_index().drop(columns=['League']).set_index(['Home Team', 'Away Team']))
     else:
-        limited_data_display = limited_data.reset_index()  # Reset the index to include 'Home Team' and 'Away Team' columns
-        df_placeholder.dataframe(limited_data_display.drop(columns=['League']))  # Exclude 'League' column from display
+        df_placeholder.dataframe(limited_data_display.reset_index().drop(columns=['League']).set_index(['Home Team', 'Away Team']))
 
     # Button to display all rows
     if st.button("View All"):
-        full_data_display = full_data_display.reset_index()  # Reset the index to include 'Home Team' and 'Away Team' columns
-        df_placeholder.dataframe(full_data_display.drop(columns=['League']))  # Exclude 'League' column from display
+        df_placeholder.dataframe(full_data_display.reset_index().drop(columns=['League']).set_index(['Home Team', 'Away Team']))
 
     # Trigger download
     st.write('')
