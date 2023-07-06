@@ -179,6 +179,7 @@ def stats_and_leagues_page():
 
     # Select team from a dropdown menu
     teams = sorted(set(full_data_display.index.get_level_values(0)).union(full_data_display.index.get_level_values(1)))
+    teams = sorted(teams)  # This line sorts the teams in alphabetical order
     teams.insert(0, "None")
     selected_team = st.selectbox('Select Team', teams, index=0)
 
