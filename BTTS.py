@@ -170,6 +170,10 @@ def stats_and_leagues_page():
     limited_data = data[data['League'] == league_selection].head(10)
     full_data = data[data['League'] == league_selection]
 
+    # Sort 'Home Team' column in alphabetical order
+    full_data.sort_values('Home Team', inplace=True)
+    limited_data = full_data.head(10)
+
     # Set 'Home Team' and 'Away Team' as the index
     limited_data_display = limited_data.set_index(['Home Team', 'Away Team'])
     full_data_display = full_data.set_index(['Home Team', 'Away Team'])
@@ -179,7 +183,6 @@ def stats_and_leagues_page():
 
     # Select team from a dropdown menu
     teams = sorted(set(full_data_display.index.get_level_values(0)).union(full_data_display.index.get_level_values(1)))
-    teams = sorted(teams)  # This line sorts the teams in alphabetical order
     teams.insert(0, "None")
     selected_team = st.selectbox('Select Team', teams, index=0)
 
