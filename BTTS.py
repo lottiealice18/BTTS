@@ -174,7 +174,7 @@ def stats_and_leagues_page():
     limited_data = full_data.head(10)
 
     # Set 'Home Team' and 'Away Team' as the index
-    # limited_data_display = limited_data.set_index(['Home Team', 'Away Team'])
+    limited_data_display = limited_data.set_index(['Home Team', 'Away Team'])
     full_data_display = full_data.set_index(['Home Team', 'Away Team'])
 
     # Create a placeholder for the dataframe
@@ -195,13 +195,14 @@ def stats_and_leagues_page():
         away_games.sort_index(level='Home Team', inplace=True)
 
         filtered_data = pd.concat([home_games, away_games])
-        df_placeholder.dataframe(filtered_data.drop(columns=['League']))  # Exclude 'League' column from display
+        filtered_data = filtered_data.reset_index(drop=True)  # Reset the index and drop the 'League' column
+        df_placeholder.dataframe(filtered_data)
     else:
-        df_placeholder.dataframe(limited_data.drop(columns=['League']))  # Exclude 'League' column from display
+        df_placeholder.dataframe(limited_data_display.reset_index(drop=True))  # Reset the index and drop the 'League' column
 
     # Button to display all rows
     if st.button("View All"):
-        df_placeholder.dataframe(full_data_display.drop(columns=['League']))  # Exclude 'League' column from display
+        df_placeholder.dataframe(full_data_display.reset_index(drop=True))  # Reset the index and drop the 'League' column
 
     # Trigger download
     st.write('')
