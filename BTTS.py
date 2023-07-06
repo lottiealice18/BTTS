@@ -210,46 +210,77 @@ def stats_and_leagues_page():
 
 
 
-def today_matches_page():
-    # Sidebar for selections
-    st.sidebar.title("Selections")
+def todays_matches_page():
+    st.title("Today's Matches")
+    st.write("This is a list of the 1st Weekends Premier League Matches. When the Season kicks off then a selection of matches from across europe will be posted daily.")
+    st.write(
+        "Please download the data as a CSV file (Link at the bottom of the page) to explore it further. In Excel, you can use filters to sort and analyze the data. For example, you can sort columns from largest to smallest to identify interesting patterns or trends.")
 
-    # Dropdown for country selection
-    country_selection = st.sidebar.selectbox("Country", list(config.keys()), 0)
+    st.write('')
+    st.write(
+        '**Note:** Please scroll horizontally to view all the stats for today\'s matches, or select a stat from the radio buttons.')
+    st.write(
+        'These statistics are based on past data and do not guarantee future success. Please gamble responsibly.')
 
-    # Dropdown for league selection
-    league_selection = st.sidebar.radio("League", config[country_selection]["league_order"])
+    # Load today's matches data
+    todays_matches = pd.read_csv("https://raw.githubusercontent.com/lottiealice18/BTTS/main/Todays%20Matches.csv")
 
-    # Read the data for selected country
-    data = config[country_selection]["data"]
+    # Initialize an empty list to store today's matches with stats
+    todays_data_with_stats = []
 
-    # Prepare the data
-    data = prepare_data(data, config[country_selection]["percentage_columns"],
-                        config[country_selection]["average_columns"])
+    # Loop over each country's data
+    for country in config.keys():
+        # Load country's data
+        country_data = config[country]["data"]
 
-    # Filter the data for today's matches
-    today = datetime.today().strftime('%Y-%m-%d')
-    today_matches = data[data['Date'] == today]
-    today_matches_filtered = today_matches[today_matches['Games Played'] >= 8]
+        # Prepare the country's data
+        country_data = prepare_data(country_data, config[country]["percentage_columns"],
+                                    config[country]["average_columns"])
 
-    # Display the country, league, and today's matches
-    st.header(f"{country_selection} {league_selection}")
-    st.subheader("Today's Matches")
+        # Merge today's matches with this country's data on 'Home Team' and 'Away Team'
+        merged_data = pd.merge(todays_matches, country_data, on=['Home Team', 'Away Team'], how='inner')
 
-    if today_matches_filtered.empty:
-        st.write("No matches found for today.")
+        # Append this to the overall list
+        todays_data_with_stats.append(merged_data)
+
+    # Combine all dataframes
+    todays_data_with_stats = pd.concat(todays_data_with_stats)
+
+    # Set 'Home Team' and 'Away Team' as the index
+    todays_data_with_stats.set_index(['Home Team', 'Away Team'], inplace=True)
+
+    # Sort by 'League', 'Home Team' and 'Away Team'
+    todays_data_with_stats.sort_values(by=['League', 'Home Team', 'Away Team'], inplace=True)
+
+    # Get column names from the filtered DataFrame
+    columns = todays_data_with_stats.columns.tolist()
+
+    # Remove unwanted columns
+    unwanted_columns = ['Home Team', 'Away Team', 'League']
+    columns = [column for column in columns if column not in unwanted_columns]
+
+    # Add "None" option to the column selection
+    columns.insert(0, "None")
+
+    # Create a placeholder for the dataframe
+    df_placeholder = st.empty()
+
+    # Select columns using radio buttons
+    selected_column = st.radio("Select Columns", columns, index=0)
+
+    if selected_column != "None":
+        # Filtered DataFrame based on the selected column
+        filtered_data = todays_data_with_stats[[selected_column]]
+        # Display the filtered data
+        df_placeholder.dataframe(filtered_data)
     else:
-        st.write(today_matches_filtered)
+        # Display the original DataFrame
+        df_placeholder.dataframe(todays_data_with_stats.drop(columns=['League']))
 
-    # Get the top 5 statistical selections for each column
-    st.subheader("Today's Best Statistical Selections")
-
-    for column in today_matches_filtered.columns:
-        if column != 'Date' and column != 'Games Played':
-            top_selections = today_matches_filtered.nlargest(5, column)
-            st.write(f"Top 5 in {column}:")
-            st.write(top_selections)
-            st.write("---")
+    # Download link for the data
+    download_link_text = "Click here to download today's matches as a CSV"
+    tmp_download_link = download_link(todays_data_with_stats.drop(columns=['League']), 'todays_matches.csv', download_link_text)
+    st.markdown(tmp_download_link, unsafe_allow_html=True)
 
 
 
