@@ -270,16 +270,16 @@ def todays_matches_page():
 
     if selected_column != "None":
         # Filtered DataFrame based on the selected column
-        filtered_data = todays_data_with_stats[['League', selected_column]]
+        filtered_data = todays_data_with_stats[[selected_column]]
         # Display the filtered data
         df_placeholder.dataframe(filtered_data)
     else:
         # Display the original DataFrame
-        df_placeholder.dataframe(todays_data_with_stats)
+        df_placeholder.dataframe(todays_data_with_stats.drop(columns=['League']))
 
     # Download link for the data
     download_link_text = "Click here to download today's matches as a CSV"
-    tmp_download_link = download_link(todays_data_with_stats, 'todays_matches.csv', download_link_text)
+    tmp_download_link = download_link(todays_data_with_stats.drop(columns=['League']), 'todays_matches.csv', download_link_text)
     st.markdown(tmp_download_link, unsafe_allow_html=True)
 
 
