@@ -278,87 +278,6 @@ def todays_matches_page():
     st.markdown(tmp_download_link, unsafe_allow_html=True)
 
 
-def betting_and_promotions():
-    st.title("Betting Systems and Promotions")
-
-    st.sidebar.title("System Selection")
-    system_selection = st.sidebar.radio("Select a System",
-                                        ['None', 'Value Bet Calculator', '18 Team Combination System', 'System 3',
-                                         'System 4',
-                                         'System 5'])
-    # Rest of your code...
-
-    if system_selection == 'None':
-        st.write("Welcome to the Betting Systems and Offers page!")
-        st.write(
-            "Here, you can find a collection of betting systems and exclusive offers to enhance your betting experience.")
-        st.write(
-            "Explore the available systems and offers to make informed decisions and maximize your chances of success.")
-        st.write(
-            "Please note that betting involves risk, and it's essential to gamble responsibly. Only participate if you meet the legal age requirements in your jurisdiction.")
-
-    elif system_selection == 'Value Bet Calculator':
-        st.title("Value Bet Calculator")
-        st.write(
-            "A 'Value Bet' occurs when you think the probability of an outcome happening is greater than the probability implied by the bookmaker's odds. "
-            "This calculator will help you to identify potential 'Value Bets', but it's important to remember that even a 'Value Bet' is not guaranteed to win. "
-            "Each bet is a separate event, and the outcome is influenced by many variables that can be unpredictable. Please bet responsibly."
-        )
-        # Get user inputs
-        num_outcomes = st.number_input("Enter the number of possible outcomes", min_value=2)
-        decimal_odds = st.number_input("Enter the odds", min_value=1.01)
-        user_probability = st.number_input("Enter your estimated probability (%)", min_value=0.01, max_value=100.0)
-
-        # Calculate implied probability
-        implied_probability = round(100 / decimal_odds, 2)
-
-        # Display the results
-        st.write(f"The implied probability based on the odds is: {implied_probability}%")
-        if user_probability > implied_probability:
-            st.write("Based on your estimated probability, this could be a Value Bet.")
-        else:
-            st.write("Based on your estimated probability, this does not appear to be a Value Bet.")
-
-    elif system_selection == '18 Team Combination System':
-        st.title("18 Team Combination System")
-        st.write("The 18 Team Combination System involves selecting 18 teams and creating combinations of them "
-                 "such that at least one line will contain 4 wins if 7 of the 18 selected teams win. "
-                 "This is achieved using a 'wheel' system, a strategic play method designed to optimize the number "
-                 "of winning combinations.")
-
-        combinations = [
-            "01 02 03 04 05 06",
-            "07 08 09 10 11 12",
-            "13 14 15 16 17 18",
-            "01 07 13 08 14 03",
-            "02 09 15 10 04 05",
-            "11 17 06 12 16 18",
-            "01 09 14 10 15 05",
-            "02 07 11 03 13 16",
-            "08 12 04 18 06 17",
-            "01 08 11 15 03 16",
-            "02 13 09 04 17 05",
-            "07 14 10 18 12 06",
-        ]
-
-        st.write("For example, the system creates combinations like this:")
-
-        for combination in combinations:
-            st.code(combination)
-
-        st.write("This is just a strategic play method and does not guarantee a profit. "
-                 "The outcome will still depend on the accuracy of your predictions and the inherent randomness "
-                 "of the betting event.")
-
-    elif system_selection == 'System 3':
-        st.write("Hello, you've selected System 3!")
-
-    elif system_selection == 'System 4':
-        st.write("Hello, you've selected System 4!")
-
-    elif system_selection == 'System 5':
-        st.write("Hello, you've selected System 5!")
-
 
 def main():
     st.markdown("""
@@ -372,8 +291,7 @@ def main():
         stats_and_leagues_page()
     elif selection == "Today's Matches":
         todays_matches_page()
-    elif selection == "Betting Systems and Promotions Page":
-        betting_and_promotions()
+    
 
 
 if __name__ == "__main__":
