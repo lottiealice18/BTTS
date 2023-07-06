@@ -119,7 +119,7 @@ PAGES = {
     "Home": "home_page",
     "Stats and Leagues": "stats_and_leagues_page",
     "Today's Matches": "todays_matches_page",
-    "Betting Systems and Promotions Page": "betting_and_promotions"
+    #"Betting Systems and Promotions Page": "betting_and_promotions"
 }
 
 
