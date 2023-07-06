@@ -139,7 +139,6 @@ def home_page():
     st.write(
         "Please note that the statistics provided are based on historical data and should be used for informational purposes only.")
 
-
 def stats_and_leagues_page():
     # Sidebar for selections
     st.sidebar.title("Selections")
@@ -175,7 +174,7 @@ def stats_and_leagues_page():
     limited_data = full_data.head(10)
 
     # Set 'Home Team' and 'Away Team' as the index
-    limited_data_display = limited_data.set_index(['Home Team', 'Away Team'])
+    # limited_data_display = limited_data.set_index(['Home Team', 'Away Team'])
     full_data_display = full_data.set_index(['Home Team', 'Away Team'])
 
     # Create a placeholder for the dataframe
@@ -196,17 +195,18 @@ def stats_and_leagues_page():
         away_games.sort_index(level='Home Team', inplace=True)
 
         filtered_data = pd.concat([home_games, away_games])
-        df_placeholder.dataframe(filtered_data)
+        df_placeholder.dataframe(filtered_data.drop(columns=['League']))  # Exclude 'League' column from display
     else:
-        df_placeholder.dataframe(limited_data_display)
+        df_placeholder.dataframe(limited_data.drop(columns=['League']))  # Exclude 'League' column from display
 
     # Button to display all rows
     if st.button("View All"):
-        df_placeholder.dataframe(full_data_display)
+        df_placeholder.dataframe(full_data_display.drop(columns=['League']))  # Exclude 'League' column from display
 
     # Trigger download
     st.write('')
     st.write('')
+
 
 
 def todays_matches_page():
