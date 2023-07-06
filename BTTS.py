@@ -1,5 +1,3 @@
-
-
 import streamlit as st
 import pandas as pd
 import base64
@@ -12,37 +10,17 @@ PERCENTAGE_COLUMNS = ['Home Win %', 'Draw %', 'Away Win %', 'BTTS %', 'BTTS Home
                       'Over 3.5 Goals %', 'Over 4.5 Goals %']
 AVERAGE_COLUMNS = ['Average Goals For Home', 'Average Goals For Away']
 
-def staking_plan(bank_balance, decimal_odds, winning_probability):
-    """
-    This function uses the Kelly formula to calculate the optimal stake size based on the bank balance, odds,
-    and winning probability.
-    """
-    # Convert decimal odds to fractional
-    fractional_odds = decimal_odds - 1
-
-    # Calculate the implied probability
-    implied_probability = 1 / decimal_odds
-
-    # Convert winning probability from percentage to fraction
-    winning_probability = winning_probability / 100
-
-    # Calculate the Kelly fraction
-    kelly_fraction = (fractional_odds * winning_probability - (1 - winning_probability)) / fractional_odds
-
-    # Ensure the Kelly fraction is within 0 and 0.05 (1 - 5%)
-    kelly_fraction = np.clip(kelly_fraction, 0, 0.05)
-
-    # Calculate the stake
-    stake = bank_balance * kelly_fraction
-
-    return stake, kelly_fraction
 
 def download_link(object_to_download, download_filename, download_link_text):
     if isinstance(object_to_download, pd.DataFrame):
+        object_to_download = object_to_download.copy()
+        object_to_download.reset_index(
+            inplace=True)  # Reset the index to include "Home Team" and "Away Team" as columns
         object_to_download = object_to_download.to_csv(index=False)
     b64 = base64.b64encode(object_to_download.encode()).decode()
     href = f'data:file/csv;base64,{b64}'
     return f'<a href="{href}" download="{download_filename}">{download_link_text}</a>'
+
 
 def prepare_data(data, percentage_columns, average_columns):
     for column in percentage_columns:
@@ -55,6 +33,7 @@ def prepare_data(data, percentage_columns, average_columns):
         if column in data.columns:
             data.loc[:, column] = data[column].apply(lambda x: '{:.2f}'.format(x))
     return data
+
 
 # File paths and data loading
 data_files = {
@@ -143,6 +122,7 @@ PAGES = {
     "Betting Systems and Promotions Page": "betting_and_promotions"
 }
 
+
 def home_page():
     st.title("Both Teams to Score and Goals Scored Percentages")
     st.write("Welcome to Both Teams to Score and Goals Scored Percentages!")
@@ -227,11 +207,10 @@ def stats_and_leagues_page():
 
 def todays_matches_page():
     st.title("Today's Matches")
-    st.write("Here is a list of today's matches.")
+    st.write("This is a list of the 1st Weekends Premier League Matches. When the Season kicks off then a selection of matches from across europe will be posted daily.")
     st.write(
         "Please download the data as a CSV file (Link at the bottom of the page) to explore it further. In Excel, you can use filters to sort and analyze the data. For example, you can sort columns from largest to smallest to identify interesting patterns or trends.")
-    st.write(
-        "Make sure to check out the 'Betting Systems and Promotions Page' for the latest offers and promotions to enhance your betting experience.")
+
     st.write('')
     st.write(
         '**Note:** Please scroll horizontally to view all the stats for today\'s matches, or select a stat from the radio buttons.')
@@ -298,11 +277,6 @@ def todays_matches_page():
     tmp_download_link = download_link(todays_data_with_stats, 'todays_matches.csv', download_link_text)
     st.markdown(tmp_download_link, unsafe_allow_html=True)
 
-    # Trigger download
-    st.write('')
-    st.write('')
-
-
 
 def betting_and_promotions():
     st.title("Betting Systems and Promotions")
@@ -312,7 +286,7 @@ def betting_and_promotions():
                                         ['None', 'Value Bet Calculator', '18 Team Combination System', 'System 3',
                                          'System 4',
                                          'System 5'])
-        # Rest of your code...
+    # Rest of your code...
 
     if system_selection == 'None':
         st.write("Welcome to the Betting Systems and Offers page!")
@@ -385,6 +359,7 @@ def betting_and_promotions():
     elif system_selection == 'System 5':
         st.write("Hello, you've selected System 5!")
 
+
 def main():
     st.markdown("""
         **Note for Mobile Users:** Please click on the arrow at the top left corner to open the selections sidebar.
@@ -399,6 +374,7 @@ def main():
         todays_matches_page()
     elif selection == "Betting Systems and Promotions Page":
         betting_and_promotions()
+
 
 if __name__ == "__main__":
     main()
