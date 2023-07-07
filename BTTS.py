@@ -119,7 +119,8 @@ PAGES = {
     "Home": "home_page",
     "Stats and Leagues": "stats_and_leagues_page",
     "Today's Matches": "todays_matches_page",
-    #"Betting Systems and Promotions Page": "betting_and_promotions"
+    "Top 5 Statistics": "top_5_stats_page"
+    # "Betting Systems and Promotions Page": "betting_and_promotions"
 }
 
 
@@ -138,6 +139,7 @@ def home_page():
         "Feel free to explore the sidebar to select a country and league of interest. Once selected, you can view and download the corresponding data. We hope that these statistics enhance your understanding of both teams to score and goals scored percentages, empowering you to make informed decisions.")
     st.write(
         "Please note that the statistics provided are based on historical data and should be used for informational purposes only.")
+
 
 def stats_and_leagues_page():
     # Sidebar for selections
@@ -195,24 +197,26 @@ def stats_and_leagues_page():
         away_games.sort_index(level='Home Team', inplace=True)
 
         filtered_data = pd.concat([home_games, away_games])
-        df_placeholder.dataframe(filtered_data.reset_index().drop(columns=['League']).set_index(['Home Team', 'Away Team']))
+        df_placeholder.dataframe(
+            filtered_data.reset_index().drop(columns=['League']).set_index(['Home Team', 'Away Team']))
     else:
-        df_placeholder.dataframe(limited_data_display.reset_index().drop(columns=['League']).set_index(['Home Team', 'Away Team']))
+        df_placeholder.dataframe(
+            limited_data_display.reset_index().drop(columns=['League']).set_index(['Home Team', 'Away Team']))
 
     # Button to display all rows
     if st.button("View All"):
-        df_placeholder.dataframe(full_data_display.reset_index().drop(columns=['League']).set_index(['Home Team', 'Away Team']))
+        df_placeholder.dataframe(
+            full_data_display.reset_index().drop(columns=['League']).set_index(['Home Team', 'Away Team']))
 
     # Trigger download
     st.write('')
     st.write('')
 
 
-
-
 def todays_matches_page():
     st.title("Today's Matches")
-    st.write("This is a list of the 1st Weekends Premier League Matches. When the Season kicks off then a selection of matches from across europe will be posted daily.")
+    st.write(
+        "This is a list of the 1st Weekends Premier League Matches. When the Season kicks off then a selection of matches from across europe will be posted daily.")
     st.write(
         "Please download the data as a CSV file (Link at the bottom of the page) to explore it further. In Excel, you can use filters to sort and analyze the data. For example, you can sort columns from largest to smallest to identify interesting patterns or trends.")
 
@@ -277,12 +281,74 @@ def todays_matches_page():
         # Display the original DataFrame
         df_placeholder.dataframe(todays_data_with_stats.drop(columns=['League']))
 
+
     # Download link for the data
     download_link_text = "Click here to download today's matches as a CSV"
-    tmp_download_link = download_link(todays_data_with_stats.drop(columns=['League']), 'todays_matches.csv', download_link_text)
+    tmp_download_link = download_link(todays_data_with_stats.drop(columns=['League']), 'todays_matches.csv',
+                                      download_link_text)
     st.markdown(tmp_download_link, unsafe_allow_html=True)
 
 
+def top_5_stats_page():
+    import pandas as pd
+
+    # Load today's matches data
+    todays_matches = pd.read_csv("https://raw.githubusercontent.com/lottiealice18/BTTS/main/Todays%20Matches.csv")
+
+    # Initialize an empty list to store today's matches with stats
+    todays_data_with_stats = []
+
+    # Loop over each country's data
+    for country in config.keys():
+        # Load country's data
+        country_data = config[country]["data"]
+
+        # Prepare the country's data
+        country_data = prepare_data(country_data, config[country]["percentage_columns"],
+                                    config[country]["average_columns"])
+
+        # Merge today's matches with this country's data on 'Home Team' and 'Away Team'
+        merged_data = pd.merge(todays_matches, country_data, on=['Home Team', 'Away Team'], how='inner')
+
+        # Append this to the overall list
+        todays_data_with_stats.append(merged_data)
+
+    # Combine all dataframes
+    todays_data_with_stats = pd.concat(todays_data_with_stats)
+
+    # Columns to sort by for top 5 statistical selections
+    columns_to_sort = ['Total Games', 'Average Goals For Home', 'Average Goals For Away', 'Home Win %', 'Draw %',
+                       'Away Win %', 'BTTS %', 'BTTS Home Win %', 'BTTS Away Win %', 'BTTS Draw %',
+                       'BTTS No Draw %', 'Over 0.5 Goals %', 'Over 1.5 Goals %', 'Over 2.5 Goals %',
+                       'Over 3.5 Goals %', 'Over 4.5 Goals %']
+
+    # Add "None" option to the column selection
+    columns_to_sort.insert(0, "None")
+
+    # Add a title
+    st.title("Top 5 Statistical Selections")
+
+    # Explanation
+    st.write("This section displays the top 5 statistical selections based on the chosen category. First, it filters matches that have been played 10 times or more. Then, you can select a category from the drop-down menu. Please note that these statistics are not guaranteed and should be used for informational purposes only.")
+
+    # Create a placeholder for the new dataframe
+    new_df_placeholder = st.empty()
+
+    # Dropdown for column selection
+    selected_column = st.selectbox('Select Statistic', columns_to_sort, index=0)
+
+    if selected_column != "None":
+        # Filter rows where 'Total Games' is less than 10
+        filtered_data = todays_data_with_stats[todays_data_with_stats['Total Games'] >= 10]
+
+        # Sort by the selected column and take the top 5
+        top_5_data = filtered_data.sort_values(by=selected_column, ascending=False).head(5)
+
+        # Only display 'Home Team', 'Away Team', and the selected column
+        top_5_data = top_5_data.reset_index()[['Home Team', 'Away Team', selected_column]]
+
+        # Display the top 5 data
+        new_df_placeholder.dataframe(top_5_data)
 
 def main():
     st.markdown("""
@@ -296,8 +362,8 @@ def main():
         stats_and_leagues_page()
     elif selection == "Today's Matches":
         todays_matches_page()
-    
-
+    elif selection == "Top 5 Statistics":
+        top_5_stats_page()
 
 if __name__ == "__main__":
     main()
