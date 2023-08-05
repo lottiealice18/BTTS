@@ -4,7 +4,7 @@ import base64
 from datetime import datetime
 import numpy as np
 
-# Constants for column name
+# Constants for column names
 PERCENTAGE_COLUMNS = ['Home Win %', 'Draw %', 'Away Win %', 'BTTS %', 'BTTS Home Win %', 'BTTS Away Win %',
                       'BTTS Draw %', 'BTTS No Draw %', 'Over 0.5 Goals %', 'Over 1.5 Goals %', 'Over 2.5 Goals %',
                       'Over 3.5 Goals %', 'Over 4.5 Goals %']
