@@ -242,7 +242,7 @@ def todays_matches_page():
                                     config[country]["average_columns"])
 
         # Merge today's matches with this country's data on 'Home Team' and 'Away Team'
-        merged_data = pd.merge(todays_matches, country_data, on=['HomeTeam', 'AwayTeam'], how='inner')
+        merged_data = pd.merge(todays_matches, country_data, on=['Home Team', 'Away Team'], how='inner')
 
         # Append this to the overall list
         todays_data_with_stats.append(merged_data)
@@ -251,16 +251,16 @@ def todays_matches_page():
     todays_data_with_stats = pd.concat(todays_data_with_stats)
 
     # Set 'Home Team' and 'Away Team' as the index
-    todays_data_with_stats.set_index(['HomeTeam', 'AwayTeam'], inplace=True)
+    todays_data_with_stats.set_index(['Home Team', 'Away Team'], inplace=True)
 
     # Sort by 'League', 'Home Team' and 'Away Team'
-    todays_data_with_stats.sort_values(by=['League', 'HomeTeam', 'AwayTeam'], inplace=True)
+    todays_data_with_stats.sort_values(by=['League', 'Home Team', 'Away Team'], inplace=True)
 
     # Get column names from the filtered DataFrame
     columns = todays_data_with_stats.columns.tolist()
 
     # Remove unwanted columns
-    unwanted_columns = ['HomeTeam', 'AwayTeam', 'League']
+    unwanted_columns = ['Home Team', 'Away Team', 'League']
     columns = [column for column in columns if column not in unwanted_columns]
 
     # Add "None" option to the column selection
