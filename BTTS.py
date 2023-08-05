@@ -227,7 +227,7 @@ def todays_matches_page():
         'These statistics are based on past data and do not guarantee future success. Please gamble responsibly.')
 
     # Load today's matches data
-    todays_matches = pd.read_csv("https://raw.githubusercontent.com/lottiealice18/BTTS/main/fixtures.csv")
+    todays_matches = pd.read_csv("https://raw.githubusercontent.com/lottiealice18/BTTS/main/fixtures123.csv")
 
     # Initialize an empty list to store today's matches with stats
     todays_data_with_stats = []
