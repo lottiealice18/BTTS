@@ -242,7 +242,7 @@ def todays_matches_page():
                                     config[country]["average_columns"])
 
         # Merge today's matches with this country's data on 'Home Team' and 'Away Team'
-        merged_data = pd.merge(todays_matches, country_data, on=['HomeTeam', 'AwayTeam'], how='inner')
+        merged_data = pd.merge(todays_matches, country_data, on=['Home Team', 'Away Team'], how='inner')
 
         # Append this to the overall list
         todays_data_with_stats.append(merged_data)
