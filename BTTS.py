@@ -298,8 +298,7 @@ def top_5_stats_page():
     st.title("Today's Matches")
     st.write("This is a list of the 1st Weekends Premier League Matches...")
 
-    # Load today's matches data
-    todays_matches = pd.read_csv("https://raw.githubusercontent.com/lottiealice18/BTTS/main/fixtures123.csv")
+    
 
     
 
