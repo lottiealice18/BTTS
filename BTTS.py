@@ -294,6 +294,18 @@ def top_5_stats_page():
 
     # Load today's matches data
     todays_matches = pd.read_csv("https://raw.githubusercontent.com/lottiealice18/BTTS/main/fixtures%20(2).csv")
+    def todays_matches_page():
+    st.title("Today's Matches")
+    st.write("This is a list of the 1st Weekends Premier League Matches...")
+
+    # Load today's matches data
+    todays_matches = pd.read_csv("https://raw.githubusercontent.com/lottiealice18/BTTS/main/fixtures123.csv")
+
+    # Strip whitespace from team names
+    todays_matches['Home Team'] = todays_matches['Home Team'].str.strip()
+    todays_matches['Away Team'] = todays_matches['Away Team'].str.strip()
+
+    # ... (continue with the rest of the function)
 
     # Initialize an empty list to store today's matches with stats
     todays_data_with_stats = []
