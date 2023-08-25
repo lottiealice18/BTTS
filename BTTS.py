@@ -215,17 +215,7 @@ def stats_and_leagues_page():
 
 def todays_matches_page():
     st.title("Today's Matches")
-    st.write(
-        "This is a list of the 1st Weekends Premier League Matches. When the Season kicks off then a selection of matches from across europe will be posted daily.")
-    st.write(
-        "Please download the data as a CSV file (Link at the bottom of the page) to explore it further. In Excel, you can use filters to sort and analyze the data. For example, you can sort columns from largest to smallest to identify interesting patterns or trends.")
-
-    st.write('')
-    st.write(
-        '**Note:** Please scroll horizontally to view all the stats for today\'s matches, or select a stat from the radio buttons.')
-    st.write(
-        'These statistics are based on past data and do not guarantee future success. Please gamble responsibly.')
-
+    st.write("This is a list of the 1st Weekends Premier League Matches...")
     # Load today's matches data
     todays_matches = pd.read_csv("https://raw.githubusercontent.com/lottiealice18/BTTS/main/fixtures123.csv")
 
@@ -281,12 +271,13 @@ def todays_matches_page():
         # Display the original DataFrame
         df_placeholder.dataframe(todays_data_with_stats.drop(columns=['League']))
 
-
     # Download link for the data
     download_link_text = "Click here to download today's matches as a CSV"
     tmp_download_link = download_link(todays_data_with_stats.drop(columns=['League']), 'todays_matches.csv',
                                       download_link_text)
     st.markdown(tmp_download_link, unsafe_allow_html=True)
+
+
 
 
 def top_5_stats_page():
