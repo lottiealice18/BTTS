@@ -277,9 +277,6 @@ def todays_matches_page():
                                       download_link_text)
     st.markdown(tmp_download_link, unsafe_allow_html=True)
 
-
-
-
 def top_5_stats_page():
     import pandas as pd
 
