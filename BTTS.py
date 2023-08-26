@@ -215,67 +215,35 @@ def stats_and_leagues_page():
 
 def todays_matches_page():
     st.title("Today's Matches")
-    st.write("This is a list of the 1st Weekends Premier League Matches...")
-    # Load today's matches data
-    todays_matches = pd.read_csv("https://raw.githubusercontent.com/lottiealice18/BTTS/main/fixtures123.csv")
+    st.write("Upload a CSV file containing today's matches:")
 
-    # Initialize an empty list to store today's matches with stats
-    todays_data_with_stats = []
+    # Allow user to upload a CSV file
+    uploaded_file = st.file_uploader("Upload Today's Matches CSV", type=["csv"])
 
-    # Loop over each country's data
-    for country in config.keys():
-        # Load country's data
-        country_data = config[country]["data"]
+    if uploaded_file is not None:
+        # Load the uploaded CSV file
+        todays_matches = pd.read_csv(uploaded_file)
 
-        # Prepare the country's data
-        country_data = prepare_data(country_data, config[country]["percentage_columns"],
-                                    config[country]["average_columns"])
+        # Initialize an empty list to store today's matches with stats
+        todays_data_with_stats = []
 
-        # Merge today's matches with this country's data on 'Home Team' and 'Away Team'
-        merged_data = pd.merge(todays_matches, country_data, on=['Home Team', 'Away Team'], how='inner')
+        # Loop over each country's data
+        for country in config.keys():
+            # Load country's data
+            country_data = config[country]["data"]
 
-        # Append this to the overall list
-        todays_data_with_stats.append(merged_data)
+            # Prepare the country's data
+            country_data = prepare_data(country_data, config[country]["percentage_columns"],
+                                        config[country]["average_columns"])
 
-    # Combine all dataframes
-    todays_data_with_stats = pd.concat(todays_data_with_stats)
+            # Merge today's matches with this country's data on 'Home Team' and 'Away Team'
+            merged_data = pd.merge(todays_matches, country_data, on=['Home Team', 'Away Team'], how='inner')
 
-    # Set 'Home Team' and 'Away Team' as the index
-    todays_data_with_stats.set_index(['Home Team', 'Away Team'], inplace=True)
+            # Append this to the overall list
+            todays_data_with_stats.append(merged_data)
 
-    # Sort by 'League', 'Home Team' and 'Away Team'
-    todays_data_with_stats.sort_values(by=['League', 'Home Team', 'Away Team'], inplace=True)
-
-    # Get column names from the filtered DataFrame
-    columns = todays_data_with_stats.columns.tolist()
-
-    # Remove unwanted columns
-    unwanted_columns = ['Home Team', 'Away Team', 'League']
-    columns = [column for column in columns if column not in unwanted_columns]
-
-    # Add "None" option to the column selection
-    columns.insert(0, "None")
-
-    # Create a placeholder for the dataframe
-    df_placeholder = st.empty()
-
-    # Select columns using radio buttons
-    selected_column = st.radio("Select Columns", columns, index=0)
-
-    if selected_column != "None":
-        # Filtered DataFrame based on the selected column
-        filtered_data = todays_data_with_stats[[selected_column]]
-        # Display the filtered data
-        df_placeholder.dataframe(filtered_data)
-    else:
-        # Display the original DataFrame
-        df_placeholder.dataframe(todays_data_with_stats.drop(columns=['League']))
-
-    # Download link for the data
-    download_link_text = "Click here to download today's matches as a CSV"
-    tmp_download_link = download_link(todays_data_with_stats.drop(columns=['League']), 'todays_matches.csv',
-                                      download_link_text)
-    st.markdown(tmp_download_link, unsafe_allow_html=True)
+        # Combine all dataframes
+        todays_data_with_stats = pd.concat(todays_data_with_stats)
 
 def top_5_stats_page():
     import pandas as pd
